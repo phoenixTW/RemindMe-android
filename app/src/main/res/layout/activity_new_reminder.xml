@@ -6,4 +6,22 @@
     android:layout_height="match_parent"
     tools:context="org.remindme.ui.NewReminderActivity">
 
+    <include layout="@layout/new_reminder_form" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/set_reminder_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/colorAccent"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/white"
+            android:onClick="createReminder"
+            android:text="@string/new_reminder_submit_button_text"/>
+
+    </RelativeLayout>
+
 </android.support.constraint.ConstraintLayout>

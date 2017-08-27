@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">RemindMe</string>
+    <string name="app_name">Remind Me</string>
     <string name="action_settings">Settings</string>
+    <string name="add_title_hint">Reminder Title</string>
+    <string name="add_date_hint">Reminder Date</string>
+    <string name="new_reminder_submit_button_text">Set Reminder</string>
 </resources>
