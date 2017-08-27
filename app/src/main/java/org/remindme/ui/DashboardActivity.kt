@@ -1,11 +1,11 @@
 package org.remindme.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-
+import android.view.View
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import org.remindme.R
 
@@ -15,11 +15,6 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         setSupportActionBar(toolbar)
-
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -32,5 +27,10 @@ class DashboardActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    fun goToNewReminder(view: View) {
+        val newReminderActivityIntent = Intent(this, NewReminderActivity::class.java)
+        startActivity(newReminderActivityIntent)
     }
 }
