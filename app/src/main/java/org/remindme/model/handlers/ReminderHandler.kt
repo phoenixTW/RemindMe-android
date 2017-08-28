@@ -2,9 +2,12 @@ package org.remindme.model.handlers
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import org.remindme.model.Reminder
+import org.remindme.utils.DateFormatter
+import java.util.*
 
 class ReminderHandler(private val context: Context,
                       private val DATABASE_NAME: String = "remind_me",
@@ -40,14 +43,29 @@ class ReminderHandler(private val context: Context,
         val values = ContentValues()
 
         values.put(KEY_TITLE, reminder.getTitle())
-        values.put(KEY_DATE, reminder.getDate())
+        values.put(KEY_DATE, DateFormatter().getInStringFormat(reminder.getDate()))
 
         database.insert(TABLE, null, values)
         database.close()
     }
 
     fun getAllReminders(): List<Reminder> {
-        val reminders: List<Reminder> = ArrayList<Reminder>()
+        val reminders: MutableList<Reminder> = ArrayList<Reminder>()
+        val GET_ALL_REMINDER_QUERY: String = "SELECT * FROM " + TABLE;
+
+        val database = this.readableDatabase
+        val cursor: Cursor = database.rawQuery(GET_ALL_REMINDER_QUERY, null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val id: Int = cursor.getString(0).toInt()
+                val title: String = cursor.getString(1)
+                val date: Date = DateFormatter().getInDateFormat(cursor.getString(2))
+                val reminder: Reminder = Reminder(id, title, date)
+                reminders.add(reminder)
+            } while (cursor.moveToNext())
+        }
+
         return reminders;
     }
 

@@ -1,5 +1,6 @@
 package org.remindme.model
 
+import org.remindme.utils.DateFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -12,6 +13,11 @@ class Reminder(private val id: Int) : BaseModel {
         this.date = reminderDate
     }
 
+    constructor(id: Int, title: String, reminderDate: Date) : this(id) {
+        this.title = title
+        this.date = reminderDate
+    }
+
     override fun getID(): Int {
         return id
     }
@@ -20,8 +26,7 @@ class Reminder(private val id: Int) : BaseModel {
         return title
     }
 
-    fun getDate(): String {
-        val dateFormatter = SimpleDateFormat("yyyy-MM-dd")
-        return dateFormatter.format(date)
+    fun getDate(): Date {
+        return date
     }
 }
