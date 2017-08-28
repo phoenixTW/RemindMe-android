@@ -20,6 +20,7 @@
             android:layout_alignParentBottom="true"
             android:textColor="@color/white"
             android:onClick="createReminder"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:text="@string/new_reminder_submit_button_text"/>
 
     </RelativeLayout>
