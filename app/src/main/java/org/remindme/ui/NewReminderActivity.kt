@@ -1,10 +1,13 @@
 package org.remindme.ui
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import kotlinx.android.synthetic.main.activity_new_reminder.*
 import org.remindme.R
 import org.remindme.model.Reminder
 import org.remindme.model.handlers.ReminderHandler
@@ -27,7 +30,20 @@ class NewReminderActivity : AppCompatActivity() {
         return true
     }
 
-    fun createReminder(view: View) {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_add_reminder, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            createReminder()
+            return true
+        }
+        return false
+    }
+
+    fun createReminder() {
         val title = getReminderTitle()
         val date = getReminderDate()
         Log.d("Insert", "New Reminder titled " + title + " On " + date)

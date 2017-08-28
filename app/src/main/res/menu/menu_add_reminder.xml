@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="org.remindme.ui.NewReminderActivity">
+
+    <item
+        android:id="@+id/save_reminder"
+        android:icon="@drawable/ic_alarm_add_black_24dp"
+        android:title="@string/new_reminder_submit_button_text"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -18,7 +18,7 @@ class ReminderItemsAdapter(val context: Context, val remainders: List<Reminder>)
     }
 
     override fun getItemId(position: Int): Long {
-        return position as Long
+        return position.toLong()
     }
 
     override fun getCount(): Int {
