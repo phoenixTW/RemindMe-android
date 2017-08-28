@@ -18,6 +18,7 @@ class ReminderHandler(private val context: Context,
     private val PRIMARY_KEY = "id"
     private val KEY_TITLE = "title"
     private val KEY_DATE = "date"
+    private val KEY_CREATED_AT = "created_at"
 
 
     override fun onCreate(database: SQLiteDatabase?) {
@@ -25,7 +26,8 @@ class ReminderHandler(private val context: Context,
                 TABLE + "(" +
                 PRIMARY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 KEY_TITLE + " TEXT, " +
-                KEY_DATE + " DATE)"
+                KEY_DATE + " DATE, " +
+                KEY_CREATED_AT + " DATE NOT NULL)";
         if (database != null) {
             database.execSQL(CREATE_REMINDER_TABLE)
         }
@@ -44,6 +46,7 @@ class ReminderHandler(private val context: Context,
 
         values.put(KEY_TITLE, reminder.getTitle())
         values.put(KEY_DATE, DateFormatter().getInStringFormat(reminder.getDate()))
+        values.put(KEY_CREATED_AT, DateFormatter().getFullStringFormat(reminder.getCreatedAt()))
 
         database.insert(TABLE, null, values)
         database.close()
@@ -51,8 +54,8 @@ class ReminderHandler(private val context: Context,
 
     fun getAllReminders(): List<Reminder> {
         val reminders: MutableList<Reminder> = ArrayList<Reminder>()
-        val GET_ALL_REMINDER_QUERY: String = "SELECT * FROM " + TABLE;
-
+        val GET_ALL_REMINDER_QUERY: String = "SELECT * FROM " +
+                TABLE + " ORDER BY " + KEY_CREATED_AT + " DESC";
         val database = this.readableDatabase
         val cursor: Cursor = database.rawQuery(GET_ALL_REMINDER_QUERY, null)
 
@@ -61,7 +64,8 @@ class ReminderHandler(private val context: Context,
                 val id: Int = cursor.getString(0).toInt()
                 val title: String = cursor.getString(1)
                 val date: Date = DateFormatter().getInDateFormat(cursor.getString(2))
-                val reminder: Reminder = Reminder(id, title, date)
+                val createdAt: Date = DateFormatter().getInDateFormat(cursor.getString(3))
+                val reminder: Reminder = Reminder(id, title, date, createdAt)
                 reminders.add(reminder)
             } while (cursor.moveToNext())
         }
