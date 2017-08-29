@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.Switch
+import android.widget.Toast
 import org.remindme.R
 import org.remindme.constants.TYPE
 import org.remindme.model.Task
@@ -20,19 +21,24 @@ import org.remindme.utils.RMTimePicker
 import java.util.*
 
 class NewReminderActivity : AppCompatActivity() {
+    private lateinit var title: EditText
+    private lateinit var date: EditText
+    private lateinit var startTime: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_reminder)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val reminderDateField: EditText = findViewById(R.id.reminder_date)
-        RMDatePicker(this, reminderDateField)
+        title = findViewById(R.id.reminder_title)
 
-        val reminderTimeField: EditText = findViewById<EditText>(R.id.reminder_start_time)
-        RMTimePicker(this, reminderTimeField)
+        date = findViewById(R.id.reminder_date)
+        RMDatePicker(this, date)
 
-        val setAlarmSwitch: Switch = findViewById<Switch>(R.id.set_alarm)
+        startTime = findViewById<EditText>(R.id.reminder_start_time)
+        RMTimePicker(this, startTime)
+
+        val setAlarmSwitch: Switch = findViewById(R.id.set_alarm)
         setAlarmSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked)
                 setStartTimeView(View.VISIBLE)
@@ -72,16 +78,27 @@ class NewReminderActivity : AppCompatActivity() {
     }
 
     fun createTask() {
-        var task: Task
+        if (!isValid(listOf<EditText>(title, date))) {
+            showToast("Title/Date can't be empty")
+            return
+        }
+
+        val task: Task
         val title = getReminderTitle()
         val date = getReminderDate()
-        val startTime = getStartTime()
+        val startTimeInMilliSeconds = getStartTime()
 
         Log.d("Insert", "New Reminder titled " + title + " On " + date)
 
+
         val isReminder = findViewById<Switch>(R.id.set_alarm).isChecked
-        if (isReminder)
-            task = Task(title = title, date = date, startTime = startTime, type = TYPE.REMINDER)
+        if (isReminder){
+            if (!isValid(listOf(startTime))) {
+                showToast("Start time can't be empty")
+                return
+            }
+            task = Task(title = title, date = date, startTime = startTimeInMilliSeconds, type = TYPE.REMINDER)
+        }
         else
             task = Task(title = title, date = date, type = TYPE.TODO)
 
@@ -91,18 +108,24 @@ class NewReminderActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun isValid(fields: List<EditText>): Boolean {
+        val emptyFields = fields.filter { it.text.isEmpty() }
+        return emptyFields.isEmpty()
+    }
+
     private fun getStartTime(): Long {
-        val timeField: EditText = findViewById<EditText>(R.id.reminder_start_time)
-        return DateFormatter().getTime(timeField.text.toString())
+        return DateFormatter().getTime(startTime.text.toString())
     }
 
     private fun getReminderDate(): Date {
-        val date = findViewById<EditText>(R.id.reminder_date)
         return DateFormatter().getInDateFormat(date.text.toString())
     }
 
     private fun getReminderTitle(): String {
-        val title = findViewById<EditText>(R.id.reminder_title)
         return title.text.toString()
     }
 }
