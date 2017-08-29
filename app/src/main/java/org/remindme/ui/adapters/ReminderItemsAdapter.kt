@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import org.remindme.R
-import org.remindme.model.Reminder
+import org.remindme.model.Task
 import org.remindme.utils.DateFormatter
 
-class ReminderItemsAdapter(val context: Context, val remainders: List<Reminder>) : BaseAdapter() {
+class ReminderItemsAdapter(val context: Context, val remainders: List<Task>) : BaseAdapter() {
 
 
     override fun getItem(index: Int): Any {
@@ -31,7 +31,7 @@ class ReminderItemsAdapter(val context: Context, val remainders: List<Reminder>)
             contentView = LayoutInflater.from(context).inflate(R.layout.reminder_item, viewGroup, false)
         }
 
-        val item: Reminder = getItem(index) as Reminder
+        val item: Task = getItem(index) as Task
         if (contentView != null) {
             val itemName = contentView.findViewById<TextView>(R.id.task_name)
             val date = contentView.findViewById<TextView>(R.id.date)

@@ -3,6 +3,8 @@
     <string name="action_settings">Settings</string>
     <string name="add_title_hint">Reminder Title</string>
     <string name="add_date_hint">Reminder Date</string>
+    <string name="add_time_hint">Reminder Time</string>
     <string name="new_reminder_submit_button_text">Add</string>
     <string name="app_logo_description">Remind Me App Logo</string>
+    <string name="set_reminder_alarm">Set Alarm</string>
 </resources>

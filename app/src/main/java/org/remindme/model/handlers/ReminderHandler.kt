@@ -5,7 +5,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import org.remindme.model.Reminder
+import org.remindme.constants.TYPE
+import org.remindme.model.Task
 import org.remindme.utils.DateFormatter
 import java.util.*
 
@@ -18,6 +19,8 @@ class ReminderHandler(private val context: Context,
     private val PRIMARY_KEY = "id"
     private val KEY_TITLE = "title"
     private val KEY_DATE = "date"
+    private val KEY_START_TIME = "start_time"
+    private val KEY_TASK_TYPE = "task_type"
     private val KEY_CREATED_AT = "created_at"
 
 
@@ -27,6 +30,8 @@ class ReminderHandler(private val context: Context,
                 PRIMARY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 KEY_TITLE + " TEXT, " +
                 KEY_DATE + " DATE, " +
+                KEY_START_TIME + " INTEGER, " +
+                KEY_TASK_TYPE + " TEXT NOT NULL, " +
                 KEY_CREATED_AT + " DATE NOT NULL)";
         if (database != null) {
             database.execSQL(CREATE_REMINDER_TABLE)
@@ -40,20 +45,22 @@ class ReminderHandler(private val context: Context,
         }
     }
 
-    fun addReminder(reminder: Reminder) {
+    fun addReminder(task: Task) {
         val database: SQLiteDatabase = this.writableDatabase
         val values = ContentValues()
 
-        values.put(KEY_TITLE, reminder.getTitle())
-        values.put(KEY_DATE, DateFormatter().getInStringFormat(reminder.getDate()))
-        values.put(KEY_CREATED_AT, DateFormatter().getFullStringFormat(reminder.getCreatedAt()))
+        values.put(KEY_TITLE, task.getTitle())
+        values.put(KEY_DATE, DateFormatter().getInStringFormat(task.getDate()))
+        values.put(KEY_START_TIME, task.getStartTime())
+        values.put(KEY_TASK_TYPE, task.getType().toString())
+        values.put(KEY_CREATED_AT, DateFormatter().getFullStringFormat(task.getCreatedAt()))
 
         database.insert(TABLE, null, values)
         database.close()
     }
 
-    fun getAllReminders(): List<Reminder> {
-        val reminders: MutableList<Reminder> = ArrayList<Reminder>()
+    fun getAllReminders(): List<Task> {
+        val tasks: MutableList<Task> = ArrayList<Task>()
         val GET_ALL_REMINDER_QUERY: String = "SELECT * FROM " +
                 TABLE + " ORDER BY " + KEY_CREATED_AT + " DESC";
         val database = this.readableDatabase
@@ -64,13 +71,15 @@ class ReminderHandler(private val context: Context,
                 val id: Int = cursor.getString(0).toInt()
                 val title: String = cursor.getString(1)
                 val date: Date = DateFormatter().getInDateFormat(cursor.getString(2))
-                val createdAt: Date = DateFormatter().getInDateFormat(cursor.getString(3))
-                val reminder: Reminder = Reminder(id, title, date, createdAt)
-                reminders.add(reminder)
+                val startTime: Long = cursor.getString(3).toLong()
+                val taskType: TYPE = TYPE.valueOf(cursor.getString(4))
+                val createdAt: Date = DateFormatter().getInDateFormat(cursor.getString(5))
+                val task: Task = Task(id, title, date, startTime, taskType, createdAt)
+                tasks.add(task)
             } while (cursor.moveToNext())
         }
 
-        return reminders;
+        return tasks;
     }
 
 }
