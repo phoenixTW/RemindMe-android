@@ -55,10 +55,18 @@ class NewReminderActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item != null) {
-            createTask()
-            return true
+            when(item.itemId) {
+                R.id.save_reminder -> {
+                    createTask()
+                    return true
+                }
+            }
         }
         return false
     }

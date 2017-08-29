@@ -32,4 +32,9 @@ class DateFormatter {
         dateFormat = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
         return dateFormat.parse(time).time
     }
+
+    fun getFormattedTime(milliSecond: Long): String {
+        val date: Date = Date(milliSecond)
+        return date.hours.toString() + ":" + date.minutes
+    }
 }
