@@ -19,6 +19,12 @@ import org.remindme.utils.DateFormatter
 import org.remindme.utils.RMDatePicker
 import org.remindme.utils.RMTimePicker
 import java.util.*
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import org.remindme.broadcasts.AlarmBroadCastReceiver
+
 
 class NewReminderActivity : AppCompatActivity() {
     private lateinit var title: EditText
@@ -38,9 +44,9 @@ class NewReminderActivity : AppCompatActivity() {
         startTime = findViewById<EditText>(R.id.reminder_start_time)
         RMTimePicker(this, startTime)
 
-        val setAlarmSwitch: Switch = findViewById(R.id.set_alarm)
+        val setAlarmSwitch: Switch = findViewById<Switch>(R.id.set_alarm)
         setAlarmSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked)
+            if (isChecked)
                 setStartTimeView(View.VISIBLE)
             else
                 setStartTimeView(View.INVISIBLE)
@@ -67,7 +73,7 @@ class NewReminderActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item != null) {
-            when(item.itemId) {
+            when (item.itemId) {
                 R.id.save_reminder -> {
                     createTask()
                     return true
@@ -92,20 +98,39 @@ class NewReminderActivity : AppCompatActivity() {
 
 
         val isReminder = findViewById<Switch>(R.id.set_alarm).isChecked
-        if (isReminder){
+        if (isReminder) {
             if (!isValid(listOf(startTime))) {
                 showToast("Start time can't be empty")
                 return
             }
             task = Task(title = title, date = date, startTime = startTimeInMilliSeconds, type = TYPE.REMINDER)
-        }
-        else
+            setAlarm(task)
+        } else
             task = Task(title = title, date = date, type = TYPE.TODO)
 
         val reminderHandler = ReminderHandler(this)
         reminderHandler.addReminder(task)
 
         finish()
+    }
+
+    private fun setAlarm(task: Task) {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val startTime = Date(task.getStartTime())
+        val receiverIntent = Intent(applicationContext, AlarmBroadCastReceiver::class.java)
+        receiverIntent.putExtra("TASK_TITLE", task.getTitle())
+        val pendingIntent = PendingIntent.getBroadcast(
+                applicationContext,
+                0,
+                receiverIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+        )
+        val timeInMillis = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, startTime.hours)
+            set(Calendar.MINUTE, startTime.minutes)
+            set(Calendar.SECOND, 0)
+        }.timeInMillis
+        alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
     }
 
     private fun showToast(message: String) {
