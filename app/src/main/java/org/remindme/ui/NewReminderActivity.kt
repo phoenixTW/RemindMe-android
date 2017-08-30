@@ -1,5 +1,9 @@
 package org.remindme.ui
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
 import android.support.v7.app.AppCompatActivity
@@ -12,6 +16,7 @@ import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
 import org.remindme.R
+import org.remindme.broadcasts.AlarmBroadCastReceiver
 import org.remindme.constants.TYPE
 import org.remindme.model.Task
 import org.remindme.model.handlers.ReminderHandler
@@ -19,11 +24,6 @@ import org.remindme.utils.DateFormatter
 import org.remindme.utils.RMDatePicker
 import org.remindme.utils.RMTimePicker
 import java.util.*
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import org.remindme.broadcasts.AlarmBroadCastReceiver
 
 
 class NewReminderActivity : AppCompatActivity() {
@@ -116,7 +116,9 @@ class NewReminderActivity : AppCompatActivity() {
 
     private fun setAlarm(task: Task) {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val startTime = Date(task.getStartTime())
+        val dateFormatter = DateFormatter()
+        val date = dateFormatter.getInStringFormat(task.getDate())
+        val startTime = dateFormatter.getFormattedTime(task.getStartTime())
         val receiverIntent = Intent(applicationContext, AlarmBroadCastReceiver::class.java)
         receiverIntent.putExtra("TASK_TITLE", task.getTitle())
         val pendingIntent = PendingIntent.getBroadcast(
@@ -125,11 +127,7 @@ class NewReminderActivity : AppCompatActivity() {
                 receiverIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT
         )
-        val timeInMillis = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, startTime.hours)
-            set(Calendar.MINUTE, startTime.minutes)
-            set(Calendar.SECOND, 0)
-        }.timeInMillis
+        val timeInMillis = dateFormatter.getDateTimeInMilliSec(date, startTime)
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
     }
 
