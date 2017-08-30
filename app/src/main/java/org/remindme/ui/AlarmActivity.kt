@@ -5,6 +5,7 @@ import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Button
 import android.widget.TextView
 import org.remindme.R
 
@@ -24,8 +25,8 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     private fun addGestureDetector() {
-        val swipeText = findViewById<TextView>(R.id.swipe)
-        swipeText.setOnClickListener {
+        val stopAlarmButton = findViewById<Button>(R.id.stop_alarm)
+        stopAlarmButton.setOnClickListener {
             stopAlarm()
         }
     }
