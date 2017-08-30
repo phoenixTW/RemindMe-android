@@ -7,6 +7,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import org.remindme.ui.DashboardActivity
+import android.media.RingtoneManager
+import android.media.Ringtone
+
+
 
 class AlarmBroadCastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -26,5 +30,9 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
         }.build()
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(notificationID, notification)
+
+        val ringtoneNotification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        val ringtone = RingtoneManager.getRingtone(context.applicationContext, ringtoneNotification)
+        ringtone.play()
     }
 }
