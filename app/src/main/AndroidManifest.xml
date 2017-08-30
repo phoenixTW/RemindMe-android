@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.remindme">
 
+    <uses-permission android:name="android.permission.SET_ALARM" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_remind_me_launcher"
@@ -12,8 +14,7 @@
         <activity
             android:name=".ui.DashboardActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.NewReminderActivity"
             android:label="Add Reminder" />
@@ -24,8 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".broadcasts.AlarmBroadCastReceiver"/>
+
+        <receiver android:name=".broadcasts.AlarmBroadCastReceiver" />
+
+        <activity android:name=".ui.AlarmActivity" />
     </application>
-    <uses-permission android:name="android.permission.SET_ALARM"/>
 
 </manifest>

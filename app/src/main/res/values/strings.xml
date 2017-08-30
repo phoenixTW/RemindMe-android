@@ -7,4 +7,5 @@
     <string name="new_reminder_submit_button_text">Add</string>
     <string name="app_logo_description">Remind Me App Logo</string>
     <string name="set_reminder_alarm">Set Alarm</string>
+    <string name="swipe_up_to_stop_alarm">Tap here to stop alarm</string>
 </resources>
