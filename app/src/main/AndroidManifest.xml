@@ -17,7 +17,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.NewReminderActivity"
-            android:label="Add Reminder" />
+            android:label="@string/add_reminder" />
         <activity android:name=".ui.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +29,7 @@
         <receiver android:name=".broadcasts.AlarmBroadCastReceiver" />
 
         <activity android:name=".ui.AlarmActivity" />
+        <activity android:name=".ui.EditReminderActivity" />
     </application>
 
 </manifest>

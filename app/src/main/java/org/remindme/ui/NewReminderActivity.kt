@@ -26,7 +26,7 @@ import org.remindme.utils.RMTimePicker
 import java.util.*
 
 
-class NewReminderActivity : AppCompatActivity() {
+open class NewReminderActivity : AppCompatActivity() {
     private lateinit var title: EditText
     private lateinit var date: EditText
     private lateinit var startTime: EditText
@@ -53,7 +53,7 @@ class NewReminderActivity : AppCompatActivity() {
         })
     }
 
-    private fun setStartTimeView(visibility: Int) {
+    internal fun setStartTimeView(visibility: Int) {
         findViewById<TextInputLayout>(R.id.reminder_layout_start_time).visibility = visibility
     }
 
@@ -83,7 +83,7 @@ class NewReminderActivity : AppCompatActivity() {
         return false
     }
 
-    fun createTask() {
+    private fun createTask() {
         if (!isValid(listOf<EditText>(title, date))) {
             showToast("Title/Date can't be empty")
             return
@@ -96,9 +96,7 @@ class NewReminderActivity : AppCompatActivity() {
 
         Log.d("Insert", "New Reminder titled " + title + " On " + date)
 
-
-        val isReminder = findViewById<Switch>(R.id.set_alarm).isChecked
-        if (isReminder) {
+        if (isReminderTask()) {
             if (!isValid(listOf(startTime))) {
                 showToast("Start time can't be empty")
                 return
@@ -113,6 +111,8 @@ class NewReminderActivity : AppCompatActivity() {
 
         finish()
     }
+
+    internal fun isReminderTask() = findViewById<Switch>(R.id.set_alarm).isChecked
 
     private fun setAlarm(task: Task) {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager

@@ -15,6 +15,7 @@ import org.remindme.R
 import org.remindme.model.Task
 import org.remindme.model.handlers.ReminderHandler
 import org.remindme.ui.adapters.ReminderItemsAdapter
+import org.remindme.utils.DateFormatter
 
 
 class DashboardActivity : AppCompatActivity() {
@@ -40,13 +41,21 @@ class DashboardActivity : AppCompatActivity() {
             val alertDialog = AlertDialog.Builder(this).create()
             alertDialog.setTitle(selectedTask.getTitle())
             alertDialog.setButton("Edit", DialogInterface.OnClickListener { dialog, which ->
-                //                Edit functionallity come here
+                handleEditTask(selectedTask)
             })
             alertDialog.setButton2("Delete", DialogInterface.OnClickListener { dialog, which ->
                 //                Delete functionallity comes here
             })
             alertDialog.show()
         }
+    }
+
+    private fun handleEditTask(selectedTask: Task) {
+        val editReminderIntent = Intent(this, EditReminderActivity::class.java)
+        editReminderIntent.putExtra("TASK_TITLE", selectedTask.getTitle())
+        editReminderIntent.putExtra("TASK_DATE", DateFormatter().getInStringFormat(selectedTask.getDate()))
+        editReminderIntent.putExtra("TASK_START_TIME", selectedTask.getStartTime())
+        startActivity(editReminderIntent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
