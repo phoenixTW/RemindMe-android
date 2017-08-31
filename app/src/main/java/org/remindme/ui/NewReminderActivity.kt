@@ -101,10 +101,10 @@ open class NewReminderActivity : AppCompatActivity() {
                 showToast("Start time can't be empty")
                 return
             }
-            task = Task(title = title, date = date, startTime = startTimeInMilliSeconds, type = TYPE.REMINDER)
+            task = createReminderTask(title, date, startTimeInMilliSeconds)
             setAlarm(task)
         } else
-            task = Task(title = title, date = date, type = TYPE.TODO)
+            task = createToDoTask(title, date)
 
         val reminderHandler = ReminderHandler(this)
         reminderHandler.addReminder(task)
@@ -112,9 +112,15 @@ open class NewReminderActivity : AppCompatActivity() {
         finish()
     }
 
+    internal fun createToDoTask(title: String, date: Date, id: Int = 0) =
+            Task(id = id, title = title, date = date, type = TYPE.TODO)
+
+    internal fun createReminderTask(title: String, date: Date, startTimeInMilliSeconds: Long, id: Int = 0) =
+            Task(id = id, title = title, date = date, startTime = startTimeInMilliSeconds, type = TYPE.REMINDER)
+
     internal fun isReminderTask() = findViewById<Switch>(R.id.set_alarm).isChecked
 
-    private fun setAlarm(task: Task) {
+    internal fun setAlarm(task: Task) {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val dateFormatter = DateFormatter()
         val date = dateFormatter.getInStringFormat(task.getDate())
@@ -131,24 +137,24 @@ open class NewReminderActivity : AppCompatActivity() {
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
     }
 
-    private fun showToast(message: String) {
+    internal fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    private fun isValid(fields: List<EditText>): Boolean {
+    internal fun isValid(fields: List<EditText>): Boolean {
         val emptyFields = fields.filter { it.text.isEmpty() }
         return emptyFields.isEmpty()
     }
 
-    private fun getStartTime(): Long {
+    internal fun getStartTime(): Long {
         return DateFormatter().getTime(startTime.text.toString())
     }
 
-    private fun getReminderDate(): Date {
+    internal fun getReminderDate(): Date {
         return DateFormatter().getInDateFormat(date.text.toString())
     }
 
-    private fun getReminderTitle(): String {
+    internal fun getReminderTitle(): String {
         return title.text.toString()
     }
 }

@@ -55,6 +55,7 @@ class DashboardActivity : AppCompatActivity() {
         editReminderIntent.putExtra("TASK_TITLE", selectedTask.getTitle())
         editReminderIntent.putExtra("TASK_DATE", DateFormatter().getInStringFormat(selectedTask.getDate()))
         editReminderIntent.putExtra("TASK_START_TIME", selectedTask.getStartTime())
+        editReminderIntent.putExtra("TASK_ID", selectedTask.getID())
         startActivity(editReminderIntent)
     }
 

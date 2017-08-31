@@ -46,17 +46,29 @@ class ReminderHandler(private val context: Context,
     }
 
     fun addReminder(task: Task) {
-        val database: SQLiteDatabase = this.writableDatabase
-        val values = ContentValues()
+        val database: SQLiteDatabase = this.readableDatabase
+        val values = createContentValues(task)
 
+        database.insert(TABLE, null, values)
+        database.close()
+    }
+
+    fun updateReminder(task: Task) {
+        val database: SQLiteDatabase = this.readableDatabase
+        val values = createContentValues(task)
+
+        database.update(TABLE, values, PRIMARY_KEY + "=" + task.getID(), null)
+        database.close()
+    }
+
+    private fun createContentValues(task: Task): ContentValues {
+        val values = ContentValues()
         values.put(KEY_TITLE, task.getTitle())
         values.put(KEY_DATE, DateFormatter().getInStringFormat(task.getDate()))
         values.put(KEY_START_TIME, task.getStartTime())
         values.put(KEY_TASK_TYPE, task.getType().toString())
         values.put(KEY_CREATED_AT, DateFormatter().getFullStringFormat(task.getCreatedAt()))
-
-        database.insert(TABLE, null, values)
-        database.close()
+        return values
     }
 
     fun getAllReminders(): List<Task> {
