@@ -40,7 +40,6 @@ class ReminderItemsAdapter(val context: Context, val remainders: List<Task>) : B
 
             itemName.text = item.getTitle()
             val dateFormatter = DateFormatter()
-
             date.text = dateFormatter.getInStringFormat(item.getDate())
 
             if (item.getStartTime().equals(MID_NIGHT)) {

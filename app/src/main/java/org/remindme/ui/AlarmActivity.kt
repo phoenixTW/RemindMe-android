@@ -19,7 +19,7 @@ class AlarmActivity : AppCompatActivity() {
         setContentView(R.layout.activity_alarm)
         startAlarm()
         val title = intent.getStringExtra("DISPLAY_MESSAGE")
-        val textView = findViewById<TextView>(R.id.task_title)
+        val textView: TextView = findViewById(R.id.task_title)
         textView.text = title
         addGestureDetector()
     }
