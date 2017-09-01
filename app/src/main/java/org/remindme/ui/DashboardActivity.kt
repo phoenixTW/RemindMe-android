@@ -44,10 +44,21 @@ class DashboardActivity : AppCompatActivity() {
                 handleEditTask(selectedTask)
             })
             alertDialog.setButton2("Delete", DialogInterface.OnClickListener { dialog, which ->
-                //                Delete functionallity comes here
+                handleDeleteTask(selectedTask)
             })
             alertDialog.show()
         }
+    }
+
+    private fun handleDeleteTask(selectedTask: Task) {
+        val reminderHandler = ReminderHandler(this)
+        reminderHandler.deleteReminder(selectedTask)
+        refreshTheScreen()
+    }
+
+    private fun refreshTheScreen() {
+        finish()
+        startActivity(intent)
     }
 
     private fun handleEditTask(selectedTask: Task) {

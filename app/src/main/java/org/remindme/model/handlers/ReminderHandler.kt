@@ -61,6 +61,12 @@ class ReminderHandler(private val context: Context,
         database.close()
     }
 
+    fun deleteReminder(task: Task) {
+        val database = this.readableDatabase
+        database.delete(TABLE, PRIMARY_KEY + "=" + task.getID(), null)
+        database.close()
+    }
+
     private fun createContentValues(task: Task): ContentValues {
         val values = ContentValues()
         values.put(KEY_TITLE, task.getTitle())
