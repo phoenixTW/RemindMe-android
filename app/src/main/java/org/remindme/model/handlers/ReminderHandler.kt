@@ -45,12 +45,13 @@ class ReminderHandler(private val context: Context,
         }
     }
 
-    fun addReminder(task: Task) {
+    fun addReminder(task: Task): Long {
         val database: SQLiteDatabase = this.readableDatabase
         val values = createContentValues(task)
 
-        database.insert(TABLE, null, values)
+        val id = database.insert(TABLE, null, values)
         database.close()
+        return id
     }
 
     fun updateReminder(task: Task) {

@@ -65,6 +65,7 @@ class EditReminderActivity : NewReminderActivity() {
         }
 
         val taskId = intent.getIntExtra("TASK_ID", 0)
+        cancelAlarm(taskId)
         val task: Task
         val title = getReminderTitle()
         val date = getReminderDate()

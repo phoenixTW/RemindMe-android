@@ -96,18 +96,20 @@ open class NewReminderActivity : AppCompatActivity() {
 
         Log.d("Insert", "New Reminder titled " + title + " On " + date)
 
+        val reminderHandler = ReminderHandler(this)
         if (isReminderTask()) {
             if (!isValid(listOf(startTime))) {
                 showToast("Start time can't be empty")
                 return
             }
             task = createReminderTask(title, date, startTimeInMilliSeconds)
-            setAlarm(task)
-        } else
+            val taskId = reminderHandler.addReminder(task).toInt()
+            val taskWithId = createReminderTask(title, date, startTimeInMilliSeconds, taskId)
+            setAlarm(taskWithId)
+        } else {
             task = createToDoTask(title, date)
-
-        val reminderHandler = ReminderHandler(this)
-        reminderHandler.addReminder(task)
+            reminderHandler.addReminder(task)
+        }
 
         finish()
     }
@@ -129,12 +131,19 @@ open class NewReminderActivity : AppCompatActivity() {
         receiverIntent.putExtra("TASK_TITLE", task.getTitle())
         val pendingIntent = PendingIntent.getBroadcast(
                 applicationContext,
-                0,
+                task.getID(),
                 receiverIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT
         )
         val timeInMillis = dateFormatter.getDateTimeInMilliSec(date, startTime)
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
+    }
+
+    internal fun cancelAlarm(taskId: Int) {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val receiverIntent = Intent(this, AlarmBroadCastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, taskId, receiverIntent, 0)
+        alarmManager.cancel(pendingIntent)
     }
 
     internal fun showToast(message: String) {
