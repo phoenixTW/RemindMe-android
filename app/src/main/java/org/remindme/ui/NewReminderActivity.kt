@@ -18,7 +18,7 @@ import android.widget.Toast
 import org.remindme.R
 import org.remindme.broadcasts.AlarmBroadCastReceiver
 import org.remindme.constants.TYPE
-import org.remindme.model.Task
+import org.remindme.model.*
 import org.remindme.model.handlers.ReminderHandler
 import org.remindme.utils.DateFormatter
 import org.remindme.utils.RMDatePicker
@@ -75,7 +75,7 @@ open class NewReminderActivity : AppCompatActivity() {
         if (item != null) {
             when (item.itemId) {
                 R.id.save_reminder -> {
-                    createTask()
+                    saveTask()
                     return true
                 }
             }
@@ -83,35 +83,29 @@ open class NewReminderActivity : AppCompatActivity() {
         return false
     }
 
-    private fun createTask() {
-        if (!isValid(listOf<EditText>(title, date))) {
-            showToast("Title/Date can't be empty")
-            return
+    private fun saveTask() {
+        val title = title.text.toString()
+        val date = date.text.toString()
+        val time = startTime.text.toString()
+
+        Log.d("Insert", "New Reminder titled $title On $date")
+
+        try {
+            Validator().isValid(title, date, time, getSwitchState())
+            createTask(title, date, time)
+            finish()
+        } catch (error: Exception) {
+            showToast(error.message!!)
         }
+    }
 
-        val task: Task
-        val title = getReminderTitle()
-        val date = getReminderDate()
-        val startTimeInMilliSeconds = getStartTime()
-
-        Log.d("Insert", "New Reminder titled " + title + " On " + date)
-
+    private fun createTask(title: String, date: String, time: String) {
         val reminderHandler = ReminderHandler(this)
-        if (isReminderTask()) {
-            if (!isValid(listOf(startTime))) {
-                showToast("Start time can't be empty")
-                return
-            }
-            task = createReminderTask(title, date, startTimeInMilliSeconds)
-            val taskId = reminderHandler.addReminder(task).toInt()
-            val taskWithId = createReminderTask(title, date, startTimeInMilliSeconds, taskId)
-            setAlarm(taskWithId)
-        } else {
-            task = createToDoTask(title, date)
-            reminderHandler.addReminder(task)
-        }
-
-        finish()
+        val taskServiceFactory = TaskServiceFactory(title, date, time)
+        val taskService = taskServiceFactory.getService()
+        val task = taskService.create(reminderHandler)
+        if (!time.isEmpty())
+            setAlarm(task)
     }
 
     internal fun createToDoTask(title: String, date: Date, id: Int = 0) =
@@ -120,7 +114,7 @@ open class NewReminderActivity : AppCompatActivity() {
     internal fun createReminderTask(title: String, date: Date, startTimeInMilliSeconds: Long, id: Int = 0) =
             Task(id = id, title = title, date = date, startTime = startTimeInMilliSeconds, type = TYPE.REMINDER)
 
-    internal fun isReminderTask() = findViewById<Switch>(R.id.set_alarm).isChecked
+    internal fun getSwitchState() = findViewById<Switch>(R.id.set_alarm).isChecked
 
     internal fun setAlarm(task: Task) {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager

@@ -73,7 +73,7 @@ class EditReminderActivity : NewReminderActivity() {
 
         Log.d("Insert", "New Reminder titled $title On $date")
 
-        if (isReminderTask()) {
+        if (getSwitchState()) {
             if (!isValid(listOf(startTime))) {
                 showToast("Start time can't be empty")
                 return
