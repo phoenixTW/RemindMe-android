@@ -7,7 +7,8 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Switch
 import org.remindme.R
-import org.remindme.model.Task
+import org.remindme.model.TaskServiceFactory
+import org.remindme.model.Validator
 import org.remindme.model.handlers.ReminderHandler
 import org.remindme.utils.DateFormatter
 
@@ -50,7 +51,7 @@ class EditReminderActivity : NewReminderActivity() {
         if (item != null) {
             when (item.itemId) {
                 R.id.save_reminder -> {
-                    updateTask()
+                    saveTask()
                     return true
                 }
             }
@@ -58,34 +59,30 @@ class EditReminderActivity : NewReminderActivity() {
         return false
     }
 
-    private fun updateTask() {
-        if (!isValid(listOf<EditText>(title, date))) {
-            showToast("Title/Date can't be empty")
-            return
-        }
-
+    private fun saveTask() {
         val taskId = intent.getIntExtra("TASK_ID", 0)
+        val title = title.text.toString()
+        val date = date.text.toString()
+        val time = startTime.text.toString()
+
         cancelAlarm(taskId)
-        val task: Task
-        val title = getReminderTitle()
-        val date = getReminderDate()
-        val startTimeInMilliSeconds = getStartTime()
+        Log.d("Edited", "New Reminder titled $title On $date")
 
-        Log.d("Insert", "New Reminder titled $title On $date")
+        try {
+            Validator().isValid(title, date, time, getSwitchState())
+            createTask(title, date, time, taskId)
+            finish()
+        } catch (error: Exception) {
+            showToast(error.message!!)
+        }
+    }
 
-        if (getSwitchState()) {
-            if (!isValid(listOf(startTime))) {
-                showToast("Start time can't be empty")
-                return
-            }
-            task = createReminderTask(title, date, startTimeInMilliSeconds, taskId)
-            setAlarm(task)
-        } else
-            task = createToDoTask(title, date, taskId)
-
+    private fun createTask(title: String, date: String, time: String, taskId: Int) {
         val reminderHandler = ReminderHandler(this)
-        reminderHandler.updateReminder(task)
-
-        finish()
+        val taskServiceFactory = TaskServiceFactory(title, date, time, taskId)
+        val taskService = taskServiceFactory.getService()
+        val task = taskService.update(reminderHandler)
+        if (!time.isEmpty())
+            setAlarm(task)
     }
 }

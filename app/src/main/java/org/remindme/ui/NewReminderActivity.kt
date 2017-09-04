@@ -17,13 +17,11 @@ import android.widget.Switch
 import android.widget.Toast
 import org.remindme.R
 import org.remindme.broadcasts.AlarmBroadCastReceiver
-import org.remindme.constants.TYPE
 import org.remindme.model.*
 import org.remindme.model.handlers.ReminderHandler
 import org.remindme.utils.DateFormatter
 import org.remindme.utils.RMDatePicker
 import org.remindme.utils.RMTimePicker
-import java.util.*
 
 
 open class NewReminderActivity : AppCompatActivity() {
@@ -108,12 +106,6 @@ open class NewReminderActivity : AppCompatActivity() {
             setAlarm(task)
     }
 
-    internal fun createToDoTask(title: String, date: Date, id: Int = 0) =
-            Task(id = id, title = title, date = date, type = TYPE.TODO)
-
-    internal fun createReminderTask(title: String, date: Date, startTimeInMilliSeconds: Long, id: Int = 0) =
-            Task(id = id, title = title, date = date, startTime = startTimeInMilliSeconds, type = TYPE.REMINDER)
-
     internal fun getSwitchState() = findViewById<Switch>(R.id.set_alarm).isChecked
 
     internal fun setAlarm(task: Task) {
@@ -142,22 +134,5 @@ open class NewReminderActivity : AppCompatActivity() {
 
     internal fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
-    internal fun isValid(fields: List<EditText>): Boolean {
-        val emptyFields = fields.filter { it.text.isEmpty() }
-        return emptyFields.isEmpty()
-    }
-
-    internal fun getStartTime(): Long {
-        return DateFormatter().getTime(startTime.text.toString())
-    }
-
-    internal fun getReminderDate(): Date {
-        return DateFormatter().getInDateFormat(date.text.toString())
-    }
-
-    internal fun getReminderTitle(): String {
-        return title.text.toString()
     }
 }

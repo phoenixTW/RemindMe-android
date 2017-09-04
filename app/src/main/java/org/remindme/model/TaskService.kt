@@ -4,4 +4,5 @@ import org.remindme.model.handlers.ReminderHandler
 
 interface TaskService {
     fun create(reminderHandler: ReminderHandler): Task
+    fun update(reminderHandler: ReminderHandler): Task
 }

@@ -3,7 +3,7 @@ package org.remindme.model
 import org.remindme.constants.TYPE
 import java.util.*
 
-class Task(private val id: Int = 0,
+class Task(private val id: Int,
            private val title: String,
            private val date: Date,
            private val startTime: Long = 0,
