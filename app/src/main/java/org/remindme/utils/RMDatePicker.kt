@@ -25,11 +25,14 @@ class RMDatePicker(val mCalendar: Calendar? = Calendar.getInstance())
     override fun onClick(view: View?) {
         if (mCalendar != null) {
             mCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault())
-            DatePickerDialog(context,
+
+            val datePickerDialog = DatePickerDialog(context,
                     this,
                     mCalendar.get(Calendar.YEAR),
                     mCalendar.get(Calendar.MONTH),
-                    mCalendar.get(Calendar.DAY_OF_MONTH)).show()
+                    mCalendar.get(Calendar.DAY_OF_MONTH))
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+            datePickerDialog.show()
         }
 
     }
