@@ -1,6 +1,9 @@
 package org.remindme.ui
 
+import android.app.AlarmManager
 import android.app.AlertDialog
+import android.app.PendingIntent
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +15,7 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import org.remindme.R
+import org.remindme.broadcasts.AlarmBroadCastReceiver
 import org.remindme.model.Task
 import org.remindme.model.handlers.ReminderHandler
 import org.remindme.ui.adapters.ReminderItemsAdapter
@@ -53,7 +57,15 @@ class DashboardActivity : AppCompatActivity() {
     private fun handleDeleteTask(selectedTask: Task) {
         val reminderHandler = ReminderHandler(this)
         reminderHandler.deleteReminder(selectedTask)
+        deleteAlarm(selectedTask.getID())
         refreshTheScreen()
+    }
+
+    private fun deleteAlarm(taskId: Int) {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val receiverIntent = Intent(this, AlarmBroadCastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, taskId, receiverIntent, 0)
+        alarmManager.cancel(pendingIntent)
     }
 
     private fun refreshTheScreen() {
